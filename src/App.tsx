@@ -5297,13 +5297,12 @@ export default function App() {
           </nav>
         </header>
         <main>
-          {currentTab === 'dashboard' && <Dashboard />}
-          {currentTab === 'quiz' && <Quiz />}
-          {currentTab === 'results' && <Results />}
-          {currentTab === 'notes' && <Notes />}
+          {currentTab === 'dashboard' && Dashboard()}
+          {currentTab === 'quiz' && Quiz()}
+          {currentTab === 'results' && Results()}
+          {currentTab === 'notes' && Notes()}
         </main>
       </div>
     </div>
   );
 }
-
