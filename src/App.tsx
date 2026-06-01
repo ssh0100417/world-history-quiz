@@ -4744,3 +4744,566 @@ const V4_QUESTION_BANK: Question[] = [
     isActive: true
   }),
 ];
+
+const QUESTION_BANK: Question[] = [...V0_QUESTION_BANK, ...V3_QUESTION_BANK, ...V4_QUESTION_BANK];
+const VERSION_OPTIONS: Array<Question['version']> = ['V0', 'V3', 'V4'];
+const COUNT_OPTIONS = Array.from({ length: 19 }, (_, i) => 10 + i * 5);
+
+export default function App() {
+  const weekOptions = useMemo(
+    () => Array.from(new Set(QUESTION_BANK.map((item) => item.week))).sort((a, b) => a - b),
+    []
+  );
+
+  const [currentTab, setCurrentTab] = useState<AppTab>('dashboard');
+  const [incorrectNotes, setIncorrectNotes] = useState<StoredWrongNote[]>([]);
+  const [selectedVersions, setSelectedVersions] = useState<Array<Question['version']>>(['V0', 'V3', 'V4']);
+  const [selectedWeeks, setSelectedWeeks] = useState<number[]>(weekOptions);
+  const [questionCount, setQuestionCount] = useState<number>(10);
+  const [showEmptyAlert, setShowEmptyAlert] = useState(false);
+  const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const [quizStart, setQuizStart] = useState<number | null>(null);
+  const [timeElapsed, setTimeElapsed] = useState(0);
+  const [stats, setStats] = useState({ totalTaken: 0, totalCorrect: 0, totalQuestions: 0 });
+
+  React.useEffect(() => {
+    let timer: ReturnType<typeof setInterval> | undefined;
+    if (currentTab === 'quiz' && quizStart) {
+      timer = setInterval(() => setTimeElapsed(Math.floor((Date.now() - quizStart) / 1000)), 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [currentTab, quizStart]);
+
+  const filtered = useMemo(
+    () => QUESTION_BANK.filter((item) => item.isActive && selectedVersions.includes(item.version) && selectedWeeks.includes(item.week)),
+    [selectedVersions, selectedWeeks]
+  );
+
+  const actualCount = Math.min(questionCount, Math.max(1, filtered.length || 1));
+  const currentQ = quizQuestions[currentQIndex];
+  const currentAnswer = selectedAnswers[currentQIndex];
+  const score = quizQuestions.reduce((acc, question, idx) => acc + (selectedAnswers[idx] === question.answer ? 1 : 0), 0);
+
+  const toggleVersion = (version: Question['version']) => {
+    setSelectedVersions((prev) => {
+      if (prev.includes(version)) {
+        const next = prev.filter((v) => v !== version);
+        return next.length > 0 ? next : prev;
+      }
+      return [...prev, version].sort((a, b) => VERSION_OPTIONS.indexOf(a) - VERSION_OPTIONS.indexOf(b));
+    });
+  };
+
+  const toggleWeek = (week: number) => {
+    setSelectedWeeks((prev) => {
+      if (prev.includes(week)) {
+        const next = prev.filter((item) => item !== week);
+        return next.length > 0 ? next : prev;
+      }
+      return [...prev, week].sort((a, b) => a - b);
+    });
+  };
+
+  const startQuiz = () => {
+    if (!filtered.length) {
+      setShowEmptyAlert(true);
+      return;
+    }
+    setShowEmptyAlert(false);
+    setQuizQuestions(shuffleArray(filtered).slice(0, actualCount));
+    setSelectedAnswers({});
+    setCurrentQIndex(0);
+    setSubmitted(false);
+    setQuizStart(Date.now());
+    setTimeElapsed(0);
+    setCurrentTab('quiz');
+  };
+
+  const selectAnswer = (index: number) => {
+    if (!currentQ || submitted) return;
+    setSelectedAnswers((prev) => ({ ...prev, [currentQIndex]: index + 1 }));
+    setSubmitted(true);
+  };
+
+  const next = () => {
+    if (!currentQ) return;
+
+    if (currentQIndex < quizQuestions.length - 1) {
+      setCurrentQIndex((prev) => prev + 1);
+      setSubmitted(false);
+      return;
+    }
+
+    const wrongs: StoredWrongNote[] = quizQuestions
+      .filter((question, idx) => selectedAnswers[idx] !== question.answer)
+      .map((question, idx) => ({ ...question, userChoice: selectedAnswers[idx], timestamp: Date.now() + idx }));
+
+    setIncorrectNotes((prev) => {
+      const existing = new Set(prev.map((item) => `${item.version}-${item.id}`));
+      const merged = [...prev];
+      wrongs.forEach((item) => {
+        const key = `${item.version}-${item.id}`;
+        if (!existing.has(key)) merged.push(item);
+      });
+      return merged;
+    });
+
+    setStats((prev) => ({
+      totalTaken: prev.totalTaken + 1,
+      totalCorrect: prev.totalCorrect + score,
+      totalQuestions: prev.totalQuestions + quizQuestions.length,
+    }));
+
+    setCurrentTab('results');
+  };
+
+  const Dashboard = () => (
+    <div className="animate-fade-in space-y-8">
+      <div className="relative overflow-hidden rounded-3xl border border-slate-700/50 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-8 text-white shadow-2xl md:p-12">
+        <div className="pointer-events-none absolute right-0 top-0 translate-x-12 -translate-y-12 p-8 opacity-5">
+          <BrainCircuit size={300} />
+        </div>
+        <div className="relative z-10">
+          <span className="mb-5 inline-block rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-yellow-950 shadow-lg">
+            RESTORED BUILD
+          </span>
+          <h2 className="mb-5 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-4xl font-black leading-tight text-transparent md:text-5xl font-serif">
+            세계사 통합 마스터 모의고사 시스템
+          </h2>
+          <p className="mb-8 max-w-2xl text-base font-light leading-relaxed text-slate-300 md:text-lg">
+            선택한 버전과 주차를 기준으로 활성화된 문항만 랜덤 출제됩니다.
+          </p>
+
+          <div className="mb-8 space-y-6 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Filter size={18} className="text-amber-400" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-amber-100">출제 버전 선택</h3>
+                </div>
+                <div className="rounded-lg border border-slate-800 bg-slate-900/50 px-3 py-1.5 text-xs font-medium text-slate-400">
+                  선택된 버전: <strong className="text-white">{selectedVersions.length}</strong>개
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2 md:gap-3">
+                {VERSION_OPTIONS.map((version) => {
+                  const isSelected = selectedVersions.includes(version);
+                  return (
+                    <button
+                      key={version}
+                      onClick={() => toggleVersion(version)}
+                      className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-bold transition-all duration-300 ${
+                        isSelected
+                          ? 'border-amber-300 bg-amber-500/90 text-white'
+                          : 'border-slate-700/50 bg-slate-800/50 text-slate-400 hover:bg-slate-700 hover:text-white'
+                      }`}
+                    >
+                      {isSelected ? <CheckCircle size={16} className="text-amber-100" /> : <div className="h-4 w-4 rounded-full border-2 border-slate-600" />}
+                      {version}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Filter size={18} className="text-indigo-400" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-indigo-100">출제 범위 (주차) 선택</h3>
+                </div>
+                <div className="rounded-lg border border-slate-800 bg-slate-900/50 px-3 py-1.5 text-xs font-medium text-slate-400">
+                  현재 범위 내 문항: <strong className="text-white">{filtered.length}</strong> 문항
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2 md:gap-3">
+                {weekOptions.map((week) => {
+                  const isSelected = selectedWeeks.includes(week);
+                  return (
+                    <button
+                      key={week}
+                      onClick={() => toggleWeek(week)}
+                      className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-bold transition-all duration-300 ${
+                        isSelected
+                          ? 'border-indigo-400 bg-indigo-600/90 text-white'
+                          : 'border-slate-700/50 bg-slate-800/50 text-slate-400 hover:bg-slate-700 hover:text-white'
+                      }`}
+                    >
+                      {isSelected ? <CheckCircle size={16} className="text-indigo-200" /> : <div className="h-4 w-4 rounded-full border-2 border-slate-600" />}
+                      {week}주차
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Filter size={18} className="text-emerald-400" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-emerald-100">출제 문항 수 선택</h3>
+                </div>
+                <div className="rounded-lg border border-slate-800 bg-slate-900/50 px-3 py-1.5 text-xs font-medium text-slate-400">
+                  실제 출제 수: <strong className="text-white">{actualCount}</strong> 문항
+                </div>
+              </div>
+              <div className="max-w-xs">
+                <select
+                  value={questionCount}
+                  onChange={(e) => setQuestionCount(Number.parseInt(e.target.value, 10))}
+                  className="w-full rounded-xl border-2 border-slate-700 bg-slate-800/80 px-4 py-3 font-semibold text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                >
+                  {COUNT_OPTIONS.map((count) => (
+                    <option key={count} value={count}>
+                      {count}문항
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {showEmptyAlert && (
+              <div className="rounded-lg border border-rose-900/50 bg-rose-950/50 p-3 text-sm font-bold text-rose-400 flex items-center gap-2">
+                <AlertCircle size={16} /> 최소 1개 이상의 활성 문항이 있어야 테스트를 시작할 수 있습니다.
+              </div>
+            )}
+          </div>
+
+          <button
+            onClick={startQuiz}
+            className="flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 px-8 py-4 font-black text-slate-900 transition-all hover:scale-[1.03]"
+          >
+            <Play size={24} fill="currentColor" /> 선택 범위 {actualCount}문항 테스트 시작
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        <div className="rounded-3xl border border-slate-200/60 bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-start justify-between">
+            <div className="rounded-2xl bg-indigo-50 p-3 text-indigo-600">
+              <BarChart3 size={24} />
+            </div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Total Tests</span>
+          </div>
+          <p className="text-3xl font-black text-slate-800">
+            {stats.totalTaken}
+            <span className="ml-1 text-lg font-normal text-slate-400">회</span>
+          </p>
+          <p className="mt-1 text-sm font-medium text-slate-500">누적 모의고사 응시</p>
+        </div>
+        <div className="rounded-3xl border border-slate-200/60 bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-start justify-between">
+            <div className="rounded-2xl bg-emerald-50 p-3 text-emerald-600">
+              <Trophy size={24} />
+            </div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Accuracy</span>
+          </div>
+          <p className="text-3xl font-black text-slate-800">
+            {stats.totalQuestions > 0 ? Math.round((stats.totalCorrect / stats.totalQuestions) * 100) : 0}
+            <span className="ml-1 text-lg font-normal text-slate-400">%</span>
+          </p>
+          <p className="mt-1 text-sm font-medium text-slate-500">전체 정답률</p>
+        </div>
+        <div className="rounded-3xl border border-slate-200/60 bg-white p-6 shadow-sm">
+          <div className="mb-4 flex items-start justify-between">
+            <div className="rounded-2xl bg-blue-50 p-3 text-blue-600">
+              <FileText size={24} />
+            </div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">DB Size</span>
+          </div>
+          <p className="text-3xl font-black text-slate-800">
+            {QUESTION_BANK.length}
+            <span className="ml-1 text-lg font-normal text-slate-400">Q</span>
+          </p>
+          <p className="mt-1 text-sm font-medium text-slate-500">현재 보유 문항</p>
+        </div>
+        <div
+          onClick={() => setCurrentTab('notes')}
+          className="cursor-pointer rounded-3xl border border-slate-200/60 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-rose-300 hover:shadow-xl"
+        >
+          <div className="mb-4 flex items-start justify-between">
+            <div className="rounded-2xl bg-rose-50 p-3 text-rose-600">
+              <Bookmark size={24} />
+            </div>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Review</span>
+          </div>
+          <p className="text-3xl font-black text-slate-800">
+            {incorrectNotes.length}
+            <span className="ml-1 text-lg font-normal text-slate-400">개</span>
+          </p>
+          <p className="mt-1 text-sm font-bold text-rose-500">오답 노트 확인하기 →</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const Quiz = () => {
+    if (!currentQ) return null;
+    const total = quizQuestions.length;
+    const isCorrect = currentAnswer === currentQ.answer;
+
+    return (
+      <div className="mx-auto w-full max-w-4xl animate-fade-in">
+        <div className="mb-8">
+          <div className="mb-3 flex items-end justify-between">
+            <span className="inline-block rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-1.5 text-sm font-black uppercase tracking-widest text-indigo-600 shadow-sm">
+              Question {currentQIndex + 1} / {total}
+            </span>
+            <span className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-1.5 text-sm font-bold text-slate-600 shadow-sm">
+              <Clock size={16} className="text-indigo-500" /> {formatTime(timeElapsed)}
+            </span>
+          </div>
+          <div className="h-3 w-full overflow-hidden rounded-full bg-slate-200/70 shadow-inner">
+            <div
+              className="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 transition-all duration-500 ease-out"
+              style={{ width: `${(currentQIndex / total) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="mb-6 overflow-hidden rounded-[2rem] border border-slate-200/60 bg-white shadow-xl">
+          <div className="relative border-b border-slate-100 bg-slate-50/80 p-8 md:p-12">
+            <span className="mb-6 inline-block rounded-lg border border-indigo-200 bg-indigo-100 px-3 py-1.5 text-xs font-black text-indigo-800 shadow-sm">
+              📚 출처: {currentQ.source}
+            </span>
+            <h3 className="break-keep whitespace-pre-wrap font-serif text-2xl font-bold leading-snug text-slate-800 md:text-3xl">
+              {currentQ.question}
+            </h3>
+          </div>
+          <div className="bg-white p-8 md:p-12">
+            <div className="space-y-4">
+              {currentQ.options.map((opt, idx) => {
+                const optionNum = idx + 1;
+                let btnStateClass = 'border-slate-200 text-slate-700 hover:border-indigo-400 hover:bg-indigo-50/50 hover:shadow-md';
+                if (submitted) {
+                  if (optionNum === currentQ.answer) btnStateClass = 'border-emerald-500 bg-emerald-50 font-bold text-emerald-950';
+                  else if (optionNum === currentAnswer) btnStateClass = 'border-rose-300 bg-rose-50 text-rose-900 line-through opacity-60';
+                  else btnStateClass = 'border-slate-100 bg-slate-50 opacity-40';
+                }
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => selectAnswer(idx)}
+                    disabled={submitted}
+                    className={`flex w-full items-start gap-5 rounded-2xl border-2 p-5 text-left transition-all duration-300 md:items-center md:p-6 ${btnStateClass}`}
+                  >
+                    <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border-2 border-slate-200 bg-white text-lg font-black text-slate-400 shadow-sm">
+                      {optionNum}
+                    </span>
+                    <span className="pt-1 text-base font-medium leading-relaxed md:pt-0 md:text-lg">{opt}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {submitted && (
+          <div className={`mb-6 rounded-[2rem] border p-8 shadow-xl ${isCorrect ? 'border-emerald-200 bg-emerald-50' : 'border-rose-200 bg-rose-50'}`}>
+            <div className="flex flex-col items-start gap-6 md:flex-row">
+              {isCorrect ? (
+                <div className="rounded-full bg-emerald-100 p-4 shadow-inner">
+                  <CheckCircle className="text-emerald-600" size={40} />
+                </div>
+              ) : (
+                <div className="rounded-full bg-rose-100 p-4 shadow-inner">
+                  <XCircle className="text-rose-600" size={40} />
+                </div>
+              )}
+              <div className="w-full">
+                <h4 className={`mb-4 text-2xl font-black ${isCorrect ? 'text-emerald-800' : 'text-rose-800'}`}>
+                  {isCorrect ? '정답입니다.' : '오답입니다.'}
+                </h4>
+                {!isCorrect && (
+                  <div className="mb-6 rounded-2xl border border-rose-100 bg-white p-5 text-sm text-rose-900 shadow-sm">
+                    <span className="mb-2 flex items-center gap-2 font-black text-rose-700">
+                      <XCircle size={16} /> 오답 짚고 넘어가기
+                    </span>
+                    <span className="leading-relaxed">{currentQ.wrongExplanation}</span>
+                  </div>
+                )}
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+                  <p className="text-[15px] font-medium leading-relaxed text-slate-700">{currentQ.explanation}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="mt-8 flex justify-end pb-16">
+          {submitted && (
+            <button
+              onClick={next}
+              className="flex items-center gap-3 rounded-2xl bg-slate-900 px-10 py-5 text-lg font-black text-white transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-600"
+            >
+              {currentQIndex === total - 1 ? '최종 성적표 확인하기' : '다음 문제로 계속 진행'} <ChevronRight size={24} />
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const Results = () => {
+    const isPass = score >= quizQuestions.length * 0.7;
+    return (
+      <div className="mx-auto max-w-4xl animate-fade-in py-10 text-center">
+        <div className="relative overflow-hidden rounded-[3rem] border border-slate-100 bg-white p-10 shadow-2xl md:p-16">
+          <div className={`absolute left-0 top-0 h-4 w-full ${isPass ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : 'bg-gradient-to-r from-rose-400 to-orange-500'}`} />
+          <h2 className="mb-4 font-serif text-4xl font-black text-slate-800 md:text-5xl">학습 진단 리포트</h2>
+          <p className="mb-12 text-lg font-medium text-slate-500">
+            소요 시간: <span className="font-bold text-indigo-600">{formatTime(timeElapsed)}</span>
+          </p>
+          <div className="mb-12">
+            <span className="block text-7xl font-black leading-none text-slate-800">{score}</span>
+            <span className="text-xl font-bold uppercase tracking-widest text-slate-400">/ {quizQuestions.length} 점</span>
+          </div>
+          <div className="mb-12">
+            <h3 className={`mb-4 text-3xl font-black ${isPass ? 'text-emerald-600' : 'text-rose-600'}`}>
+              {isPass ? '훌륭합니다! 세계사 마스터 등급입니다.' : '취약한 개념을 다시 점검해 보세요.'}
+            </h3>
+          </div>
+          <div className="flex flex-col justify-center gap-5 sm:flex-row">
+            <button
+              onClick={() => setCurrentTab('notes')}
+              className="flex flex-1 items-center justify-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-8 py-5 text-lg font-black text-rose-700 transition-colors hover:bg-rose-100"
+            >
+              <Bookmark size={24} /> 저장된 오답 노트 확인
+            </button>
+            <button
+              onClick={() => setCurrentTab('dashboard')}
+              className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-slate-900 px-8 py-5 text-lg font-black text-white transition-all hover:-translate-y-1 hover:bg-indigo-600"
+            >
+              <Home size={24} /> 대시보드로 복귀
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const Notes = () => (
+    <div className="mx-auto max-w-5xl animate-fade-in pb-16">
+      <div className="mb-12 flex flex-col gap-6 border-b border-slate-200 pb-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h2 className="flex items-center gap-4 font-serif text-3xl font-black text-slate-800 md:text-4xl">
+            <div className="rounded-2xl bg-rose-100 p-3">
+              <Bookmark className="text-rose-600" size={36} />
+            </div>
+            나만의 오답 노트
+          </h2>
+          <p className="mt-4 text-lg text-slate-500">
+            시험을 치르며 축적된 <span className="font-bold text-rose-600">{incorrectNotes.length}개</span>의 취약 개념을 점검하세요.
+          </p>
+        </div>
+        <button
+          onClick={() => setCurrentTab('dashboard')}
+          className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-6 py-3.5 text-sm font-bold text-slate-600 shadow-sm transition-colors hover:border-indigo-200 hover:text-indigo-700"
+        >
+          <Home size={18} /> 대시보드 메인으로
+        </button>
+      </div>
+      {incorrectNotes.length === 0 ? (
+        <div className="rounded-[3rem] border border-slate-200 bg-white px-10 py-24 text-center shadow-xl">
+          <div className="mx-auto mb-8 flex h-32 w-32 items-center justify-center rounded-full bg-emerald-50 shadow-inner">
+            <CheckCircle className="text-emerald-500" size={64} />
+          </div>
+          <h3 className="mb-4 text-3xl font-black text-slate-800">현재 기록된 오답이 없습니다!</h3>
+        </div>
+      ) : (
+        <div className="space-y-10">
+          {[...incorrectNotes].reverse().map((note, idx) => (
+            <div key={`${note.version}-${note.id}-${idx}`} className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-lg">
+              <div className="flex flex-col gap-4 border-b border-slate-100 bg-slate-50/80 px-8 py-6 sm:flex-row sm:items-center sm:justify-between md:px-12">
+                <span className="inline-block w-max rounded-lg border border-indigo-200 bg-indigo-100 px-4 py-2 text-sm font-black text-indigo-800 shadow-sm">
+                  📌 핵심 키워드: {note.keyword}
+                </span>
+                <span className="max-w-sm break-all text-right text-xs font-bold text-slate-400 sm:break-normal">{note.source}</span>
+              </div>
+              <div className="p-8 pl-10 md:p-12 md:pl-14">
+                <h3 className="mb-8 font-serif text-2xl font-bold leading-relaxed text-slate-800">{note.question}</h3>
+                <div className="mb-8 grid gap-6 md:grid-cols-2">
+                  <div className="rounded-2xl border-2 border-slate-200 bg-slate-50/50 p-6">
+                    <p className="mb-3 flex items-center gap-2 text-sm font-black text-slate-400">
+                      <XCircle size={16} /> 내가 선택한 오답
+                    </p>
+                    <p className="text-base font-medium leading-relaxed text-rose-700 line-through">
+                      {note.userChoice ? note.options[note.userChoice - 1] : '시간 초과 / 선택 안 함'}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border-2 border-emerald-300 bg-emerald-50/50 p-6">
+                    <p className="mb-3 flex items-center gap-2 text-sm font-black text-emerald-700">
+                      <CheckCircle size={16} /> 올바른 정답
+                    </p>
+                    <p className="text-base font-bold leading-relaxed text-emerald-900">{note.options[note.answer - 1]}</p>
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-8">
+                  <div className="space-y-4 text-[15px] font-medium leading-loose text-slate-700">
+                    <p>{note.explanation}</p>
+                    <p className="block rounded-xl border border-rose-100 bg-white p-4 text-sm text-rose-700">
+                      <strong className="mr-2 text-rose-800">💡 오답 짚고 넘어가기:</strong>
+                      {note.wrongExplanation}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="relative min-h-screen bg-slate-50 p-4 font-sans text-slate-800 selection:bg-indigo-200 selection:text-indigo-900 md:p-8">
+      <div className="mx-auto max-w-6xl">
+        <header className="mb-12 flex flex-col items-center justify-between gap-5 border-b-2 border-slate-200/60 pb-6 md:flex-row">
+          <div className="group flex cursor-pointer items-center gap-4" onClick={() => setCurrentTab('dashboard')}>
+            <div className="rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-900 p-3 text-white shadow-xl transition-transform duration-300 group-hover:scale-110">
+              <BookOpen size={30} strokeWidth={2.5} />
+            </div>
+            <div>
+              <h1 className="font-serif text-3xl font-black tracking-tight text-slate-900 drop-shadow-sm md:text-4xl">세계사 마스터</h1>
+              <p className="mt-1 text-xs font-bold uppercase tracking-widest text-indigo-600">Question Bank Edition</p>
+            </div>
+          </div>
+          <nav className="flex rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
+            <button
+              onClick={() => setCurrentTab('dashboard')}
+              className={`rounded-xl px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+                currentTab === 'dashboard' ? 'scale-105 bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+              }`}
+            >
+              대시보드 홈
+            </button>
+            <button
+              onClick={() => setCurrentTab('notes')}
+              className={`flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+                currentTab === 'notes' ? 'scale-105 bg-rose-500 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+              }`}
+            >
+              오답 노트
+              <span className={`rounded-md px-2 py-0.5 text-xs ${currentTab === 'notes' ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                {incorrectNotes.length}
+              </span>
+            </button>
+          </nav>
+        </header>
+        <main>
+          {currentTab === 'dashboard' && <Dashboard />}
+          {currentTab === 'quiz' && <Quiz />}
+          {currentTab === 'results' && <Results />}
+          {currentTab === 'notes' && <Notes />}
+        </main>
+      </div>
+    </div>
+  );
+}
+
