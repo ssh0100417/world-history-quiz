@@ -1,0 +1,231 @@
+{
+  "inputFiles": [
+    {
+      "path": "C:/Users/pc/.codex/attachments/ad321122-e6d4-47b0-9c96-c9032c5dfa60/pasted-text.txt",
+      "arrayName": "WEEK_09_V0",
+      "count": 15,
+      "weeks": [
+        9
+      ]
+    },
+    {
+      "path": "C:/Users/pc/.codex/attachments/ca5f3868-6f05-4e93-bec7-4ccc5747e0fd/pasted-text.txt",
+      "arrayName": "WEEK_10_V0",
+      "count": 15,
+      "weeks": [
+        10
+      ]
+    },
+    {
+      "path": "C:/Users/pc/.codex/attachments/517d781d-cf5b-4541-810b-b8aab7964184/pasted-text.txt",
+      "arrayName": "WEEK_10_V0",
+      "count": 15,
+      "weeks": [
+        10
+      ]
+    },
+    {
+      "path": "C:/Users/pc/.codex/attachments/73ea1123-c761-4559-bd1f-622eab3e00ca/pasted-text.txt",
+      "arrayName": "WEEK_11_V0",
+      "count": 15,
+      "weeks": [
+        11
+      ]
+    }
+  ],
+  "duplicateAttachmentFiles": [
+    {
+      "path": "C:/Users/pc/.codex/attachments/517d781d-cf5b-4541-810b-b8aab7964184/pasted-text.txt",
+      "duplicateOf": "C:/Users/pc/.codex/attachments/ca5f3868-6f05-4e93-bec7-4ccc5747e0fd/pasted-text.txt"
+    }
+  ],
+  "targetWeeks": [
+    9,
+    10,
+    11,
+    13
+  ],
+  "addedCount": 42,
+  "addedIds": [
+    "V0-W09-002",
+    "V0-W09-003",
+    "V0-W09-004",
+    "V0-W09-005",
+    "V0-W09-006",
+    "V0-W09-007",
+    "V0-W09-008",
+    "V0-W09-009",
+    "V0-W09-010",
+    "V0-W09-011",
+    "V0-W09-012",
+    "V0-W09-013",
+    "V0-W09-014",
+    "V0-W09-015",
+    "V0-W10-002",
+    "V0-W10-003",
+    "V0-W10-004",
+    "V0-W10-005",
+    "V0-W10-006",
+    "V0-W10-007",
+    "V0-W10-008",
+    "V0-W10-009",
+    "V0-W10-010",
+    "V0-W10-011",
+    "V0-W10-012",
+    "V0-W10-013",
+    "V0-W10-014",
+    "V0-W10-015",
+    "V0-W11-002",
+    "V0-W11-003",
+    "V0-W11-004",
+    "V0-W11-005",
+    "V0-W11-006",
+    "V0-W11-007",
+    "V0-W11-008",
+    "V0-W11-009",
+    "V0-W11-010",
+    "V0-W11-011",
+    "V0-W11-012",
+    "V0-W11-013",
+    "V0-W11-014",
+    "V0-W11-015"
+  ],
+  "skippedDuplicateCount": 18,
+  "skippedDuplicates": [
+    {
+      "id": "V0-W09-001",
+      "week": 9,
+      "question": "프랑스 혁명 기간동안 벌어진 사건이다. 다음 중 가장 먼저 벌어진 일은?"
+    },
+    {
+      "id": "V0-W10-001",
+      "week": 10,
+      "question": "1848년 독일에서 자유주의 혁명을 현실화하기 위해 수립한 조직은 무엇인가?"
+    },
+    {
+      "id": "V0-W10-001",
+      "week": 10,
+      "question": "1848년 독일에서 자유주의 혁명을 현실화하기 위해 수립한 조직은 무엇인가?"
+    },
+    {
+      "id": "V0-W10-002",
+      "week": 10,
+      "question": "다음 중 19세기 도시적 삶에 대한 설명으로 적절하지 않은 것은?"
+    },
+    {
+      "id": "V0-W10-003",
+      "week": 10,
+      "question": "산업혁명이 영국에서 시작된 이유라 보기 어려운 것은?"
+    },
+    {
+      "id": "V0-W10-004",
+      "week": 10,
+      "question": "1848년 2월 혁명의 결과 프랑스에서 수립된 정부 체제는?"
+    },
+    {
+      "id": "V0-W10-005",
+      "week": 10,
+      "question": "19세기 조선의 4대 박해는 어떤 종교와의 갈등을 의미했는가?"
+    },
+    {
+      "id": "V0-W10-006",
+      "week": 10,
+      "question": "19세기 유럽의 도시화 현상 속에서 벌어지는 형태가 아닌 것은?"
+    },
+    {
+      "id": "V0-W10-007",
+      "week": 10,
+      "question": "중간계급, 즉 부르주아지가 내세운 가치에 해당하지 않는 것은?"
+    },
+    {
+      "id": "V0-W10-008",
+      "week": 10,
+      "question": "산업혁명과 직접적으로 관련된 개념이 아닌 것은?"
+    },
+    {
+      "id": "V0-W10-009",
+      "week": 10,
+      "question": "영국에서 산업혁명이 시작된 이유로 적절하지 않은 것은?"
+    },
+    {
+      "id": "V0-W10-010",
+      "week": 10,
+      "question": "산업혁명의 역사적 의의라 보기 힘든 것은?"
+    },
+    {
+      "id": "V0-W10-011",
+      "week": 10,
+      "question": "19세기 유럽 미술의 중심지가 된 도시는?"
+    },
+    {
+      "id": "V0-W10-012",
+      "week": 10,
+      "question": "다음 중 나머지 셋과 붓 터치와 지향이 다른 화가를 고르면?"
+    },
+    {
+      "id": "V0-W10-013",
+      "week": 10,
+      "question": "인상파 미술의 시작이라 볼 수 있는 인물은?"
+    },
+    {
+      "id": "V0-W10-014",
+      "week": 10,
+      "question": "다음 중 인상파 화가가 아닌 사람은?"
+    },
+    {
+      "id": "V0-W10-015",
+      "week": 10,
+      "question": "인상파 미술의 특징이라 보기 힘든 것은?"
+    },
+    {
+      "id": "V0-W11-001",
+      "week": 11,
+      "question": "세계에서 가장 먼저 여성에게 참정권을 준 국가는 어디인가?"
+    }
+  ],
+  "skippedOutOfScopeCount": 0,
+  "skippedOutOfScope": [],
+  "inactiveCount": 0,
+  "inactiveQuestions": [],
+  "beforeV0": {
+    "total": 19,
+    "byWeek": {
+      "9": 1,
+      "10": 1,
+      "11": 1,
+      "12": 15,
+      "13": 1
+    }
+  },
+  "afterV0": {
+    "total": 61,
+    "byWeek": {
+      "9": 15,
+      "10": 15,
+      "11": 15,
+      "12": 15,
+      "13": 1
+    }
+  },
+  "targetWeekCoverage": {
+    "9": {
+      "incoming": 15,
+      "finalV0": 15
+    },
+    "10": {
+      "incoming": 30,
+      "finalV0": 15
+    },
+    "11": {
+      "incoming": 15,
+      "finalV0": 15
+    },
+    "13": {
+      "incoming": 0,
+      "finalV0": 1
+    }
+  },
+  "missingTargetWeeksFromAttachments": [
+    13
+  ]
+}

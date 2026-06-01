@@ -1,0 +1,53 @@
+{
+  "inputArray": "WEEK_13_V0",
+  "incomingCount": 15,
+  "incomingWeek13Count": 15,
+  "addedCount": 14,
+  "addedIds": [
+    "V0-W13-002",
+    "V0-W13-003",
+    "V0-W13-004",
+    "V0-W13-005",
+    "V0-W13-006",
+    "V0-W13-007",
+    "V0-W13-008",
+    "V0-W13-009",
+    "V0-W13-010",
+    "V0-W13-011",
+    "V0-W13-012",
+    "V0-W13-013",
+    "V0-W13-014",
+    "V0-W13-015"
+  ],
+  "skippedDuplicateCount": 1,
+  "skippedDuplicates": [
+    {
+      "id": "V0-W13-001",
+      "week": 13,
+      "question": "다음 중 레닌의 정책이라 보기 힘든 것은?"
+    }
+  ],
+  "skippedOutOfScopeCount": 0,
+  "inactiveCount": 0,
+  "inactiveQuestions": [],
+  "beforeV0": {
+    "total": 61,
+    "byWeek": {
+      "9": 15,
+      "10": 15,
+      "11": 15,
+      "12": 15,
+      "13": 1
+    }
+  },
+  "afterV0": {
+    "total": 75,
+    "byWeek": {
+      "9": 15,
+      "10": 15,
+      "11": 15,
+      "12": 15,
+      "13": 15
+    }
+  }
+}
