@@ -9,10 +9,16 @@ createRoot(document.getElementById('root')!).render(
   </React.StrictMode>,
 );
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
-      // The app still works online if service worker registration is unavailable.
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => registration.unregister());
     });
-  });
-}
+  }
+
+  if ('caches' in window) {
+    caches.keys().then((keys) => {
+      keys.forEach((key) => caches.delete(key));
+    });
+  }
+});
