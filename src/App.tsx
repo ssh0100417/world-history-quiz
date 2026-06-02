@@ -4863,7 +4863,7 @@ export default function App() {
   };
 
   const Dashboard = () => (
-    <div className="animate-fade-in space-y-8">
+    <div className="space-y-8">
       <div className="relative overflow-hidden rounded-3xl border border-slate-700/50 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-8 text-white shadow-2xl md:p-12">
         <div className="pointer-events-none absolute right-0 top-0 translate-x-12 -translate-y-12 p-8 opacity-5">
           <BrainCircuit size={300} />
@@ -5049,7 +5049,7 @@ export default function App() {
     const isCorrect = currentAnswer === currentQ.answer;
 
     return (
-      <div className="mx-auto w-full max-w-4xl animate-fade-in">
+      <div className="mx-auto w-full max-w-4xl">
         <div className="mb-8">
           <div className="mb-3 flex items-end justify-between">
             <span className="inline-block rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-1.5 text-sm font-black uppercase tracking-widest text-indigo-600 shadow-sm">
@@ -5153,7 +5153,7 @@ export default function App() {
   const Results = () => {
     const isPass = score >= quizQuestions.length * 0.7;
     return (
-      <div className="mx-auto max-w-4xl animate-fade-in py-10 text-center">
+      <div className="mx-auto max-w-4xl py-10 text-center">
         <div className="relative overflow-hidden rounded-[3rem] border border-slate-100 bg-white p-10 shadow-2xl md:p-16">
           <div className={`absolute left-0 top-0 h-4 w-full ${isPass ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : 'bg-gradient-to-r from-rose-400 to-orange-500'}`} />
           <h2 className="mb-4 font-serif text-4xl font-black text-slate-800 md:text-5xl">학습 진단 리포트</h2>
@@ -5189,7 +5189,7 @@ export default function App() {
   };
 
   const Notes = () => (
-    <div className="mx-auto max-w-5xl animate-fade-in pb-16">
+    <div className="mx-auto max-w-5xl pb-16">
       <div className="mb-12 flex flex-col gap-6 border-b border-slate-200 pb-6 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="flex items-center gap-4 font-serif text-3xl font-black text-slate-800 md:text-4xl">
