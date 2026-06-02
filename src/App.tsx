@@ -70,27 +70,6 @@ const formatTime = (seconds: number) => {
   return `${m}:${s}`;
 };
 
-const TimerDisplay = ({ startTime }: { startTime: number | null }) => {
-  const [elapsed, setElapsed] = useState(0);
-
-  React.useEffect(() => {
-    if (!startTime) {
-      setElapsed(0);
-      return;
-    }
-
-    const updateElapsed = () => {
-      setElapsed(Math.floor((Date.now() - startTime) / 1000));
-    };
-
-    updateElapsed();
-    const timer = setInterval(updateElapsed, 1000);
-    return () => clearInterval(timer);
-  }, [startTime]);
-
-  return <span className="inline-block w-12 text-right font-mono tabular-nums">{formatTime(elapsed)}</span>;
-};
-
 const V0_QUESTION_BANK: Question[] = [
   q({
     id: "V0-W09-001",
@@ -4963,7 +4942,7 @@ export default function App() {
               Question {currentQIndex + 1} / {total}
             </span>
             <span className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-1.5 text-sm font-bold text-slate-600 shadow-sm">
-              <Clock size={16} className="text-indigo-500" /> <TimerDisplay startTime={quizStart} />
+              <Clock size={16} className="text-indigo-500" /> <span className="inline-block w-14 text-right font-bold">진행 중</span>
             </span>
           </div>
           <div className="h-3 w-full overflow-hidden rounded-full bg-slate-200/70 shadow-inner">
