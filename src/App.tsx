@@ -4897,7 +4897,7 @@ export default function App() {
                     <button
                       key={version}
                       onClick={() => toggleVersion(version)}
-                      className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-bold transition-all duration-300 ${
+                      className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-bold ${
                         isSelected
                           ? 'border-amber-300 bg-amber-500/90 text-white'
                           : 'border-slate-700/50 bg-slate-800/50 text-slate-400 hover:bg-slate-700 hover:text-white'
@@ -4928,7 +4928,7 @@ export default function App() {
                     <button
                       key={week}
                       onClick={() => toggleWeek(week)}
-                      className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-bold transition-all duration-300 ${
+                      className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2.5 text-sm font-bold ${
                         isSelected
                           ? 'border-indigo-400 bg-indigo-600/90 text-white'
                           : 'border-slate-700/50 bg-slate-800/50 text-slate-400 hover:bg-slate-700 hover:text-white'
@@ -4976,7 +4976,7 @@ export default function App() {
 
           <button
             onClick={startQuiz}
-            className="flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 px-8 py-4 font-black text-slate-900 transition-all hover:scale-[1.03]"
+            className="flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 px-8 py-4 font-black text-slate-900 hover:scale-[1.03]"
           >
             <Play size={24} fill="currentColor" /> 선택 범위 {actualCount}문항 테스트 시작
           </button>
@@ -5025,7 +5025,7 @@ export default function App() {
         </div>
         <div
           onClick={() => setCurrentTab('notes')}
-          className="cursor-pointer rounded-3xl border border-slate-200/60 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-rose-300 hover:shadow-xl"
+          className="cursor-pointer rounded-3xl border border-slate-200/60 bg-white p-6 shadow-sm hover:-translate-y-1 hover:border-rose-300 hover:shadow-xl"
         >
           <div className="mb-4 flex items-start justify-between">
             <div className="rounded-2xl bg-rose-50 p-3 text-rose-600">
@@ -5061,7 +5061,7 @@ export default function App() {
           </div>
           <div className="h-3 w-full overflow-hidden rounded-full bg-slate-200/70 shadow-inner">
             <div
-              className="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 transition-all duration-500 ease-out"
+              className="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500"
               style={{ width: `${(currentQIndex / total) * 100}%` }}
             />
           </div>
@@ -5091,7 +5091,7 @@ export default function App() {
                     key={idx}
                     onClick={() => selectAnswer(idx)}
                     disabled={submitted}
-                    className={`flex w-full items-start gap-5 rounded-2xl border-2 p-5 text-left transition-all duration-300 md:items-center md:p-6 ${btnStateClass}`}
+                    className={`flex w-full items-start gap-5 rounded-2xl border-2 p-5 text-left md:items-center md:p-6 ${btnStateClass}`}
                   >
                     <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border-2 border-slate-200 bg-white text-lg font-black text-slate-400 shadow-sm">
                       {optionNum}
@@ -5140,7 +5140,7 @@ export default function App() {
           {submitted && (
             <button
               onClick={next}
-              className="flex items-center gap-3 rounded-2xl bg-slate-900 px-10 py-5 text-lg font-black text-white transition-all duration-300 hover:-translate-y-1 hover:bg-indigo-600"
+              className="flex items-center gap-3 rounded-2xl bg-slate-900 px-10 py-5 text-lg font-black text-white hover:-translate-y-1 hover:bg-indigo-600"
             >
               {currentQIndex === total - 1 ? '최종 성적표 확인하기' : '다음 문제로 계속 진행'} <ChevronRight size={24} />
             </button>
@@ -5178,7 +5178,7 @@ export default function App() {
             </button>
             <button
               onClick={() => setCurrentTab('dashboard')}
-              className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-slate-900 px-8 py-5 text-lg font-black text-white transition-all hover:-translate-y-1 hover:bg-indigo-600"
+              className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-slate-900 px-8 py-5 text-lg font-black text-white hover:-translate-y-1 hover:bg-indigo-600"
             >
               <Home size={24} /> 대시보드로 복귀
             </button>
@@ -5277,7 +5277,7 @@ export default function App() {
           <nav className="flex rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
             <button
               onClick={() => setCurrentTab('dashboard')}
-              className={`rounded-xl px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+              className={`rounded-xl px-6 py-2.5 text-sm font-bold ${
                 currentTab === 'dashboard' ? 'scale-105 bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
               }`}
             >
@@ -5285,7 +5285,7 @@ export default function App() {
             </button>
             <button
               onClick={() => setCurrentTab('notes')}
-              className={`flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold transition-all duration-300 ${
+              className={`flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold ${
                 currentTab === 'notes' ? 'scale-105 bg-rose-500 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
               }`}
             >
