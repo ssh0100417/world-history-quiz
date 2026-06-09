@@ -37,9 +37,21 @@
     },
     "duplicateIds": []
   },
+  "V5": {
+    "total": 24,
+    "byWeek": {
+      "9": 1,
+      "10": 1,
+      "11": 2,
+      "12": 18,
+      "13": 2
+    },
+    "duplicateIds": []
+  },
   "activeVersions": [
     "V0",
     "V3",
-    "V4"
+    "V4",
+    "V5"
   ]
 }
