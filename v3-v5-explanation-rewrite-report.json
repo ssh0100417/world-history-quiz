@@ -1,0 +1,77 @@
+{
+  "updatedAt": "2026-06-12T12:59:14.093Z",
+  "targetVersions": [
+    "V3",
+    "V4",
+    "V5"
+  ],
+  "untouchedVersions": [
+    "V0",
+    "V6"
+  ],
+  "sourcesUsed": [
+    "..\\outputs\\world_history_lecture_timeline_2026-06-11.md",
+    "..\\outputs\\world_history_pdf_scope_filter_2026-06-09.md",
+    "..\\..\\2026-06-02\\files-mentioned-by-the-user-txt\\outputs\\v4_world_history_work_memo.md",
+    "C:\\Users\\pc\\Documents\\카카오톡 받은 파일\\세계사족보.txt"
+  ],
+  "externalWebSourcesUsed": 0,
+  "summary": {
+    "totalUpdated": 414,
+    "byVersion": {
+      "V3": {
+        "updated": 210,
+        "byWeek": {
+          "9": 30,
+          "10": 30,
+          "11": 30,
+          "12": 30,
+          "13": 30,
+          "14": 30,
+          "15": 30
+        }
+      },
+      "V4": {
+        "updated": 105,
+        "byWeek": {
+          "9": 15,
+          "10": 15,
+          "11": 15,
+          "12": 15,
+          "13": 15,
+          "14": 15,
+          "15": 15
+        }
+      },
+      "V5": {
+        "updated": 99,
+        "byWeek": {
+          "9": 16,
+          "10": 1,
+          "11": 17,
+          "12": 33,
+          "13": 17,
+          "14": 15
+        }
+      }
+    }
+  },
+  "checks": {
+    "expectedTotal": 414,
+    "actualTotal": 414,
+    "immutableFieldsChanged": [],
+    "untouchedVersionChanges": [],
+    "duplicateIds": [],
+    "badOptions": [],
+    "badAnswers": [],
+    "bannedHitsInTargetVersions": [],
+    "missingNumberedWrongExplanation": []
+  },
+  "notes": [
+    "V3, V4, V5 문제의 explanation과 wrongExplanation만 다시 작성했다.",
+    "id, version, week, source, type, difficulty, question, options, answer, keyword, tags, isActive는 기존 값과 일치하도록 검증했다.",
+    "V0와 V6 문제 객체는 이번 수정 대상에서 제외했다.",
+    "외부 웹 자료는 이번 실행에서 사용하지 않았다. 로컬 강의 타임라인 판독본, PDF 범위 정리, V4 작업 메모, 세계사족보.txt를 기준으로 작성했다.",
+    "보기별 오답 설명은 번호별 형식으로 유지했다."
+  ]
+}
