@@ -31,6 +31,8 @@ npm run dev
 Netlify 크레딧을 사용하지 않기 위해 GitHub Pages 배포 워크플로를 추가했습니다.
 이 저장소는 Vite 앱이므로 GitHub Pages 주소의 하위 경로에 맞춰 `vite.config.ts`의 `base`를 `/world-history-quiz/`로 설정합니다.
 
+자세한 단계별 절차와 오류 대응은 `DEPLOY_GITHUB_PAGES.md`를 확인하세요.
+
 GitHub 저장소의 `Settings -> Pages`에서 `Source`를 `GitHub Actions`로 설정한 뒤, `main` 브랜치에 push하면 `.github/workflows/deploy-pages.yml`이 자동으로 실행됩니다.
 
 배포 과정은 다음과 같습니다.
