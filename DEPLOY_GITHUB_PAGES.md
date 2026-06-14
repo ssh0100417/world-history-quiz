@@ -9,6 +9,7 @@ Repository: ssh0100417/world-history-quiz
 Pages URL: https://ssh0100417.github.io/world-history-quiz/
 Build output: dist
 Workflow: .github/workflows/deploy-pages.yml
+Deploy branch: gh-pages
 ```
 
 ## 2. dist를 직접 올리지 않는 이유
@@ -28,8 +29,9 @@ main 브랜치 push
 -> npm install
 -> npm run build
 -> dist 생성
--> dist를 GitHub Pages artifact로 업로드
--> GitHub Pages 배포
+-> dist/.nojekyll 생성
+-> dist 내용을 gh-pages 브랜치에 강제 발행
+-> GitHub Pages가 gh-pages 브랜치의 루트 폴더를 배포
 ```
 
 따라서 `dist` 폴더를 직접 커밋하지 않습니다.
@@ -43,7 +45,9 @@ Settings
 -> Pages
 -> Build and deployment
 -> Source
--> GitHub Actions
+-> Deploy from a branch
+-> Branch: gh-pages
+-> Folder: /(root)
 ```
 
 `Static HTML` 또는 `GitHub Pages Jekyll`의 `Configure` 버튼은 누르지 않습니다.
@@ -59,23 +63,37 @@ Please verify that the repository has Pages enabled and configured to build usin
 ```
 
 기존 문제 출제 앱의 워크플로에서는 이 오류가 발생한 `actions/configure-pages` 단계를 사용하지 않습니다.
+또한 `actions/deploy-pages` 단계도 사용하지 않습니다.
 
-현재 워크플로는 아래 두 단계로 `dist`를 배포합니다.
+현재 워크플로는 아래 방식으로 `dist`를 배포합니다.
 
 ```yaml
-- uses: actions/upload-pages-artifact@v4
-  with:
-    path: ./dist
-
-- uses: actions/deploy-pages@v4
+- name: Publish dist to gh-pages branch
+  run: |
+    cd dist
+    git init
+    git checkout -b gh-pages
+    git add -A
+    git commit -m "Deploy ${GITHUB_SHA}"
+    git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
 ```
 
-그래도 같은 오류가 발생하면 GitHub Pages 설정이 아직 `GitHub Actions`로 저장되지 않았을 가능성이 높습니다. 이 경우 다음 순서로 처리합니다.
+이 방식은 Pages API로 배포를 생성하지 않으므로 `Get Pages site failed` 오류 경로를 피합니다.
+대신 GitHub Pages 화면에서 `gh-pages` 브랜치를 배포 대상으로 선택해야 합니다.
 
-1. `Settings -> Pages`에서 `Source`가 `GitHub Actions`인지 다시 확인합니다.
+1. `Actions`에서 `Build dist for GitHub Pages`가 성공했는지 확인합니다.
+2. `Code -> Branches` 또는 브랜치 선택 메뉴에서 `gh-pages` 브랜치가 생겼는지 확인합니다.
+3. `Settings -> Pages`에서 `Source`가 `Deploy from a branch`인지 확인합니다.
+4. `Branch`를 `gh-pages`, 폴더를 `/(root)`로 설정합니다.
+5. Save를 누릅니다.
+6. Pages 배포가 끝날 때까지 기다립니다.
+
+이전 API 방식 워크플로가 실패한 경우 다음 순서로 처리합니다.
+
+1. `Settings -> Pages`에서 `Source`를 `Deploy from a branch`로 바꿉니다.
 2. 설정 화면을 새로고침해도 값이 유지되는지 확인합니다.
 3. `Actions` 탭으로 이동합니다.
-4. 실패한 `Deploy to GitHub Pages` 실행을 엽니다.
+4. 최신 `Build dist for GitHub Pages` 실행을 엽니다.
 5. `Re-run jobs` 또는 `Re-run all jobs`를 실행합니다.
 
 ## 5. 모바일 최신 반영 확인

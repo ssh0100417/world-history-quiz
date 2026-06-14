@@ -33,7 +33,8 @@ Netlify 크레딧을 사용하지 않기 위해 GitHub Pages 배포 워크플로
 
 자세한 단계별 절차와 오류 대응은 `DEPLOY_GITHUB_PAGES.md`를 확인하세요.
 
-GitHub 저장소의 `Settings -> Pages`에서 `Source`를 `GitHub Actions`로 설정한 뒤, `main` 브랜치에 push하면 `.github/workflows/deploy-pages.yml`이 자동으로 실행됩니다.
+GitHub 저장소의 `Settings -> Pages`에서 `Source`를 `Deploy from a branch`로 두고, `Branch`를 `gh-pages`, 폴더를 `/(root)`로 설정합니다.
+그 뒤 `main` 브랜치에 push하면 `.github/workflows/deploy-pages.yml`이 자동으로 실행되어 `dist`를 `gh-pages` 브랜치에 발행합니다.
 
 배포 과정은 다음과 같습니다.
 
@@ -42,11 +43,12 @@ main push
 -> npm install
 -> npm run build
 -> dist 폴더 생성
--> dist를 GitHub Pages artifact로 업로드
--> https://ssh0100417.github.io/world-history-quiz/ 에 배포
+-> dist를 gh-pages 브랜치에 강제 발행
+-> GitHub Pages가 gh-pages 브랜치의 루트 폴더를 배포
+-> https://ssh0100417.github.io/world-history-quiz/ 에서 확인
 ```
 
-이전 타임라인 앱에서 발생했던 `actions/configure-pages`의 `Get Pages site failed` 오류를 피하기 위해, 이 워크플로는 `actions/configure-pages` 단계를 사용하지 않고 `actions/upload-pages-artifact`와 `actions/deploy-pages`만 사용합니다.
+이전 타임라인 앱에서 발생했던 `actions/configure-pages`와 `actions/deploy-pages`의 `Get Pages site failed` 오류를 피하기 위해, 이 워크플로는 GitHub Pages API 배포 단계를 사용하지 않습니다.
 
 모바일에서 이전 화면이 보이면 아래처럼 커밋 해시나 임시 쿼리를 붙여 새로 접속하세요.
 
