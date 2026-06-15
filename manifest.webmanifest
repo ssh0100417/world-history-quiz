@@ -1,0 +1,18 @@
+{
+  "name": "세계사 마스터",
+  "short_name": "세계사",
+  "description": "세계사 문제를 모바일에서 간편하게 풀기 위한 문제 은행 앱",
+  "start_url": "/world-history-quiz/",
+  "scope": "/world-history-quiz/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/world-history-quiz/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
